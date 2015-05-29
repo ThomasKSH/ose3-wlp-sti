@@ -33,6 +33,8 @@ Due to the size of the ibm-java-x86_64-sdk-7.1-2.10.bin and wlp-runtime-8.5.5.5.
 
 The first step is to build the **wlp** and **wlp-sti** images. 
 
+    cp ~/Downloads/wlp-runtime-8.5.5.5.jar wlp-dockerfile/
+    cp ~/Downloads/ibm-java-x86_64-sdk-7.1-2.10.bin wlp-dockerfile/
     docker build -t wlp wlp-dockerfile/
     docker build -t wlp-sti wlp-sti-dockerfile/
 
@@ -65,6 +67,10 @@ Pending!
 
 ## Final Notes 
 
-DISCLAIMER: I am a true believer of the Copy&Paste religion and as such most of the stuff here have been originated somewhere else. Praise or Blame them, not me. :p  
+DISCLAIMER: I am a true believer of the Copy&Paste religion. As such most of the stuff here has been originated somewhere else. Praise or Blame them, not me. :-p  
 
-And finally, when you get it working, remember to scream: https://www.youtube.com/watch?v=xos2MnVxe-c
+IMPORTANT: And finally, when you get it working, remember to scream like I did:  
+https://www.youtube.com/watch?v=xos2MnVxe-c
+
+;)
+--pablo 
