@@ -26,6 +26,17 @@
         },
         {
             "apiVersion": "v1beta1",
+            "kind": "ImageRepository",
+            "metadata": {
+                "creationTimestamp": null,
+                "name": "wlp-sample-app"
+            },
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
+            "apiVersion": "v1beta1",
             "kind": "DeploymentConfig",
             "metadata": {
                 "creationTimestamp": null,
