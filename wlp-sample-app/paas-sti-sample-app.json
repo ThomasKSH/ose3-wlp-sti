@@ -1,0 +1,181 @@
+{
+    "apiVersion": "v1beta1",
+    "creationTimestamp": null,
+    "items": [
+	{	
+   	    "kind": "Route",
+  	    "apiVersion": "v1beta1",
+      	    "metadata": {
+        	"name": "wlp-sample-app-route"
+      	    },
+  	    "id": "wlp-sample-app-route",
+ 	    "host": "wlp-sample-app.cloudapps.example.com",
+	    "serviceName": "wlp-sample-app-service"
+	},
+
+        {
+            "apiVersion": "v1beta1",
+            "containerPort": 8080,
+            "creationTimestamp": null,
+            "id": "wlp-sample-app-service",
+            "kind": "Service",
+            "port": 8080,
+            "selector": {
+                "deploymentconfig": "wlp-sample-app-deploymentconfig"
+            }
+        },
+        {
+            "apiVersion": "v1beta1",
+            "kind": "ImageRepository",
+            "metadata": {
+                "creationTimestamp": null,
+                "name": "wlp-sample-app-jboss_sti"
+            },
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
+            "apiVersion": "v1beta1",
+            "kind": "ImageRepository",
+            "metadata": {
+                "creationTimestamp": null,
+                "name": "wlp-sample-app"
+            },
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
+            "apiVersion": "v1beta1",
+            "kind": "BuildConfig",
+            "metadata": {
+                "creationTimestamp": null,
+                "name": "wlp-sample-app"
+            },
+            "parameters": {
+                "output": {
+                    "to": {
+                        "name": "wlp-sample-app"
+                    }
+                },
+                "source": {
+                    "git": {
+                        "ref": "master",
+                        "uri": "http://tools.example.com/${USERNAME}/wlp-sample-app.git"
+                    },
+                    "type": "Git"
+                },
+                "strategy": {
+                    "stiStrategy": {
+                        "builderImage": "jboss_sti",
+                        "clean": true,
+                        "image": "jboss_sti"
+                    },
+                    "type": "STI"
+                }
+            },
+            "triggers": [
+                {
+                    "github": {
+                        "secret": "xLy6_ilJ8Lp0y0QZtCkC"
+                    },
+                    "type": "github"
+                },
+                {
+                    "generic": {
+                        "secret": "m2NXzVM3KGs6rwtg5uwe"
+                    },
+                    "type": "generic"
+                }
+            ]
+        },
+        {
+            "apiVersion": "v1beta1",
+            "kind": "DeploymentConfig",
+            "metadata": {
+                "creationTimestamp": null,
+                "name": "wlp-sample-app-deploymentconfig"
+            },
+            "template": {
+                "controllerTemplate": {
+                    "podTemplate": {
+                        "desiredState": {
+                            "manifest": {
+                                "containers": [
+                                    {
+                                        "capabilities": {},
+                                        "image": "wlp-sample-app:latest",
+                                        "imagePullPolicy": "",
+                                        "name": "wlp-sample-app",
+                                        "ports": [
+                                            {
+                                                "containerPort": 9990,
+                                                "name": "wlp-sample-app-tcp-9990",
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 9999,
+                                                "name": "wlp-sample-app-tcp-9999",
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 7600,
+                                                "name": "wlp-sample-app-tcp-7600",
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 8080,
+                                                "name": "wlp-sample-app-tcp-8080",
+                                                "protocol": "TCP"
+                                            },
+                                            {
+                                                "containerPort": 8787,
+                                                "name": "wlp-sample-app-tcp-8787",
+                                                "protocol": "TCP"
+                                            }
+                                        ],
+                                        "resources": {}
+                                    }
+                                ],
+                                "id": "",
+                                "restartPolicy": {},
+                                "version": "v1beta2",
+                                "volumes": null
+                            }
+                        },
+                        "labels": {
+                            "deploymentconfig": "wlp-sample-app-pod"
+                        }
+                    },
+                    "replicaSelector": {
+                        "deploymentconfig": "wlp-sample-app-pod"
+                    },
+                    "replicas": 1
+                },
+                "strategy": {
+                    "type": "Recreate"
+                }
+            },
+            "triggers": [
+                {
+                    "type": "ConfigChange"
+                },
+                {
+                    "imageChangeParams": {
+                        "automatic": true,
+                        "containerNames": [
+                            "wlp-sample-app"
+                        ],
+                        "from": {
+                            "name": "wlp-sample-app"
+                        },
+                        "tag": "latest"
+                    },
+                    "type": "ImageChange"
+                }
+            ]
+        }
+    ],
+    "kind": "List"
+}
