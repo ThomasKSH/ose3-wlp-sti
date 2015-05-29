@@ -1,5 +1,5 @@
 # wlp_sti
-FROM pnavascues/wlp
+FROM wlp
 
 ENV WLP_SERVER_HOME /opt/ibm/wlp/usr/servers/defaultServer
 ENV STI_SCRIPTS_URL image://.sti/bin/
