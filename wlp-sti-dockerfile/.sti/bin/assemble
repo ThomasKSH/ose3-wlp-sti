@@ -1,0 +1,37 @@
+
+#!/bin/bash -e
+#
+# STI assemble script for the 'wlp_sti' image.
+# The 'assemble' script build your application source.
+#
+# For more informations see the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+if [ "$1" = "-h" ]; then
+	# If the 'binary_wlp_sti' assemble script is executed with '-h' flag,
+	# print the usage.
+	exec /usr/local/sti/usage
+fi
+
+# Restore artifacts from the previous build (if exists).
+#
+if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+  echo "---> Restoring build artifacts"
+  mv /tmp/artifacts/* ./
+fi
+
+echo "---> Installing application files"
+cp -Rf /tmp/src/* ./
+
+echo "---> Building image from application files"
+# TODO: Add build steps for your application, for example npm install or
+#       bundle install, etc...
+
+mv *.ear *.war $WLP_SERVER_HOME/dropins/
+mv server.xml $WLP_SERVER_HOME/
+mkdir $WLP_SERVER_HOME/libs
+mkdir $WLP_SERVER_HOME/app_data
+mkdir $WLP_SERVER_HOME/app_logs
+mv *.jar $WLP_SERVER_HOME/libs/
+
