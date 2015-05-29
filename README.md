@@ -38,39 +38,45 @@ The first step is to build the **wlp** and **wlp-sti** images.
     docker build -t wlp wlp-dockerfile/
     docker build -t wlp-sti wlp-sti-dockerfile/
 
-Once these images are ready in your local machine you have the option of either performing a local build of the final **wlp-sti-sample** image via STI CLI or by configuring the Openshift 3 application with a BuildConfig element that will take care of teh build when commanded via **osc start-build** or when invoked via webhook.  
+Once these images are ready in your local machine you have the option of either performing a local build of the final **wlp-sti-sample** image via STI CLI or by configuring the Openshift 3 application with a BuildConfig element that will take care of the build when commanded via **osc start-build** or when invoked via webhook.  
 
 ### Command Line Interface STI
 
 This method has the prerequisite of having the sti command line installed. 
 
-    https://github.com/openshift/source-to-image/releases  
+Get it here: https://github.com/openshift/source-to-image/releases  
 
-Once that is ready, we provision the application resources (route, service, deploymentconfig) via json file.
+Once that is ready, provision the application resources (route, service, deploymentconfig) via json file.
 
     OSE3_USER=joe
     OSE3_PROJECT=wlp-sti-project
-    DOCKER_REGISTY=$OSE3_INTERNAL_REGISTRY_IP:$OSE3_INTERNAL_REGISTRY_PORT
-    osc new-project --admin='$OSE3_USER' --display='WAS Liberty Profile Sample Application' $OSE3_PROJECT
-    osc create -f cli-sti-app-config.json -n $OSE3_PROJECT
+    osadm new-project $OSE3_PROJECT --display-name="WLP STI Sample" \ 
+      --description="WAS Liberty Profile Sample application built through STI" --admin=$OSE3_USER
+    osc create -f wlp-sample-app/cli-sti-sample-app.json -n $OSE3_PROJECT
 
-We then proceed to build the final image and push it into OSE3's internal Docker registry.  
+Then proceed to build the final image and push it into OSE3's internal Docker registry.
 
-    sti build wlp-sample-app/ wlp-sti wlp-sample-app   
-    docker push $DOCKER_REGISTRY:$OSE3_PROJECT/wlp-sample-app
+    DOCKER_REGISTRY="$(osc describe service docker-registry -n default | grep IP | awk '{print $2}'):5000"
+    IMAGE_NAME="$DOCKER_REGISTRY/$OSE3_PROJECT/wlp-sample-app"
+    sti build --forcePull=false wlp-sample-app/ wlp-sti $IMAGE_NAME
+    docker push $IMAGE_NAME
 
-When OSE3 detects the new image, the deployment controller that is expecting it should spool up one pod of the wlp-sti-sample. The results can be checked via browser under the domain wlp-sti-sample.cloudapps.example.com 
+When OSE3 detects the new image, the deployment controller that is expecting it should spool up one pod of the wlp-sti-sample. The results can be checked via browser under the domain wlp-sample-app.cloudapps.example.com 
 
 ### PaaS STI
 
 Pending!
 
+NOTE: As far as I know currently Openshift only supports git repos as source for STI strategy in a BuildConfig, so it does not makes that much sense to use PaaS STI for pushing binaries to the PaaS. 
+
 ## Final Notes 
 
-DISCLAIMER: I am a true believer of the Copy&Paste religion. As such most of the stuff here has been originated somewhere else. Praise or Blame them, not me. :-p  
+DISCLAIMER: I am a true believer of the Copy&Paste religion. As such most of the stuff here has been originated somewhere else. Praise or blame them, not me. :-p  
+
+COLLABORATION: Just do it! :D How about the PaaS STI section? or instead of the Json config a template? Feel free to add you own ideas.  
 
 IMPORTANT: And finally, when you get it working, remember to scream like I did:  
 https://www.youtube.com/watch?v=xos2MnVxe-c
 
-;)
+Cheers,
 --pablo 
